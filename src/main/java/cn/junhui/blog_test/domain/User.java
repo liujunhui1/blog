@@ -8,11 +8,17 @@ public class User {
 
     private Long id;
 
-    private String aname;
+    private String name;
 
     private String email;
 
     public User() {
+    }
+
+    public User(Long id, String name, String email) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
     }
 
     public Long getId() {
@@ -23,12 +29,12 @@ public class User {
         this.id = id;
     }
 
-    public String getAname() {
-        return aname;
+    public String getName() {
+        return name;
     }
 
-    public void setAname(String aname) {
-        this.aname = aname;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {
@@ -43,7 +49,7 @@ public class User {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", aname='" + aname + '\'' +
+                ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 '}';
     }

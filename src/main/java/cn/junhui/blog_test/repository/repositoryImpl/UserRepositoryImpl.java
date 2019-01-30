@@ -18,17 +18,17 @@ import java.util.concurrent.atomic.AtomicLong;
 @Repository用于标识UserRepository是一个可注入的bean
  */
 @Repository
-public class UserRepositoryImpl implements UserRepository {
+public class UserRepositoryImpl /*implements UserRepository */{
 
-    /*
+  /*  *//*
     用来生成一个递增的id，座位用户唯一的id
-     */
+     *//*
     private static AtomicLong counter = new AtomicLong();
 
 
-    /*
+    *//*
     模拟数据的存储
-     */
+     *//*
     private final ConcurrentMap<Long, User> userMap = new ConcurrentHashMap<>();
 
     @Override
@@ -55,5 +55,5 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public List<User> listUser() {
         return new ArrayList<User>(this.userMap.values());
-    }
+    }*/
 }

@@ -1,18 +1,29 @@
 package cn.junhui.blog_test.domain;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
 /**
  * 军辉
  * 2019-01-29 19:03
  */
+@Entity  //实体
 public class User {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)//自增长策略
     private Long id;
 
     private String name;
 
     private String email;
 
-    public User() {
+    /*
+    设为 protected 防止直接使用
+     */
+    protected User() {
     }
 
     public User(Long id, String name, String email) {

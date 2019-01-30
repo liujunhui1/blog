@@ -2,7 +2,6 @@ package cn.junhui.blog_test.controller;
 
 import cn.junhui.blog_test.domain.User;
 import cn.junhui.blog_test.repository.UserRepository;
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -33,12 +32,12 @@ public class UserController {
     /*
     根据id查询用户
      */
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ModelAndView view(@PathVariable("id") Long id, Model model) {
         User user = userRepository.getUserById(id);
         model.addAttribute("user", user);
         model.addAttribute("title", "查看用户");
-        return new ModelAndView("user/view", "userModel", model);
+        return new ModelAndView("users/view", "userModel", model);
     }
 
     /*
@@ -48,29 +47,30 @@ public class UserController {
     public ModelAndView createForm(Model model) {
         model.addAttribute("user", new User());
         model.addAttribute("title", "创建用户");
-        return new ModelAndView("user/form", "userModel", model);
+        return new ModelAndView("users/form", "userModel", model);
     }
 
     @PostMapping
     public ModelAndView saveOrUpdateUser(User user) {
         user = userRepository.saveOrUpdateUser(user);
-        return new ModelAndView("redictre:/users");
+        // System.out.println("新添加的user的信息：" + user);
+        return new ModelAndView("redirect:/users");
         //重定向到list.html
     }
 
     /*
     删除用户
      */
-    @GetMapping("delete/{id}")
+    @GetMapping("/delete/{id}")
     public ModelAndView delete(@PathVariable("id") Long id) {
         userRepository.deleteUserById(id);
-        return new ModelAndView("redictre:/users");
+        return new ModelAndView("redirect:/users");
     }
 
     /*
     获取修改用户的界面
      */
-    @GetMapping("modify/{id}")
+    @GetMapping("/modify/{id}")
     public ModelAndView modifyForm(@PathVariable("id") Long id, Model model) {
         User user = userRepository.getUserById(id);
         model.addAttribute("user", user);
@@ -78,8 +78,4 @@ public class UserController {
         return new ModelAndView("users/form", "userModel", model);
     }
 
-    @GetMapping("/{id}")
-    public User getUser(@PathVariable("id") Long id) {
-        return new User(1L, "军辉", "123@qq.com");
-    }
 }

@@ -27,7 +27,10 @@ spring:
     #项目运行时，会打印sql语句
     show-sql: true
     #create-drop是指每次应用启动时，都会自动删除并创建数据库表，
-#    hibernate:
-#      ddl-auto: create-drop
+    #hibernate:
+      #ddl-auto: create-drop
+  data:
+    elasticsearch:
+      cluster-nodes: localhost:9300
 
 

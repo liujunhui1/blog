@@ -18,7 +18,7 @@ import java.util.List;
  * 2019-02-01 20:25
  */
 @RestController
-@RequestMapping("blog")
+@RequestMapping("/blogs")
 public class BlogController {
 
     @Autowired
@@ -27,9 +27,9 @@ public class BlogController {
     @GetMapping
     public List<EsBlog> list(@RequestParam(value = "title", required = false, defaultValue = "") String title,
                              @RequestParam(value = "summary", required = false, defaultValue = "") String summary,
-                             @RequestParam(value = "summary", required = false, defaultValue = "") String content,
-                             @RequestParam(value = "summary", required = false, defaultValue = "") int pageIndex,
-                             @RequestParam(value = "summary", required = false, defaultValue = "") int pageSize) {
+                             @RequestParam(value = "content", required = false, defaultValue = "") String content,
+                             @RequestParam(value = "pageIndex", required = false, defaultValue = "0") int pageIndex,
+                             @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize) {
         Pageable pageable = PageRequest.of(pageIndex, pageSize);
         Page<EsBlog> page = esBlogRepository.findByTitleContainingOrSummaryContainingOrContentContaining(title, summary, content, pageable);
         return page.getContent();

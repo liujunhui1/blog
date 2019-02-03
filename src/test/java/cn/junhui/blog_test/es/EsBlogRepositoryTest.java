@@ -30,17 +30,17 @@ public class EsBlogRepositoryTest {
 
         //初始化数据(三个数据)
         //1
-        esBlogRepository.save(new EsBlog("Had I not seen the Sun",
-                "I could have borne the shade",
-                "But Light a newer Wilderness. My Wilderness has made."));
+        esBlogRepository.save(new EsBlog("Q W E R T title",
+                "Y U I O P summary",
+                "A S D F content"));
         //2
-        esBlogRepository.save(new EsBlog("There is room in the halls of pleasure",
-                "For a long and lordly train",
-                "But one by one we must all file on, Through the narrow aisles of pain."));
+        esBlogRepository.save(new EsBlog("G H J K L title",
+                "Z X C V summary test",
+                "B N M content"));
         //3
-        esBlogRepository.save(new EsBlog("When you are old",
-                "When you are old and grey and full of sleep",
-                "And nodding by the fire，take down this book."));
+        esBlogRepository.save(new EsBlog("1 2 3 title",
+                " 4 5 6 summary test",
+                "7 8 9 content"));
     }
 
     @Test
@@ -50,16 +50,13 @@ public class EsBlogRepositoryTest {
 
         /*
         第一次搜索：
-        分别是 title 的 查询.参数 为 Sun（就是在前面的三条数据中的title中是否有Sun 这个关键词，有则拿出来），
-               以此类推  --> summary 的为 is； content的为 down。。
-        其中Sun匹配了第一个的 title，
-        is，没有匹配，(三个数据的summary中 均未有 is 出现)
-        down匹配了 第三首的 content，
+        Q Z what 作为了查询参数
+        Q 匹配了第一个，Z匹配了第二个，what 未匹配到
         所以一共出来了两条数据，
          */
-        String title = "Sun";
-        String summary = "is";
-        String content = "down";
+        String title = "Q";
+        String summary = "Z";
+        String content = "what";
 
         Page<EsBlog> page = esBlogRepository.findByTitleContainingOrSummaryContainingOrContentContaining(title, summary, content, pageable);
 
@@ -71,11 +68,12 @@ public class EsBlogRepositoryTest {
 
         /*
         第二次搜索：
-        三个参数都是 the
+        只使用了一个 title，匹配了三个，
+        所以出来了三条数据
          */
-        title = "the";
-        summary = "the";
-        content = "the";
+        title = "A";
+        summary = "";
+        content = "";
 
         page = esBlogRepository.findByTitleContainingOrSummaryContainingOrContentContaining(title, summary, content, pageable);
 

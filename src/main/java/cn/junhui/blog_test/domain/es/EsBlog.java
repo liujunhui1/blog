@@ -80,6 +80,6 @@ public class EsBlog implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("User[id=%s,title='%s',summary='%s',content='%s']", id, title, summary, content);
+        return String.format("Blog[id=%s,title='%s',summary='%s',content='%s']", id, title, summary, content);
     }
 }

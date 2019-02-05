@@ -1,18 +1,19 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thyleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thyleaf/layout">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>footer</title>
 </head>
 <body>
-<footer class="blog-footer bg-inverse" th:fragment="footer">
 
+<footer class="blog-footer bg-inverse" data-th-fragment="footer">
+	<a id="goToTop" href="#">
+		<i class="fa fa-chevron-up fa-3x" aria-hidden="true"></i>
+	</a>
     <div class="container">
-        <p class="m-0 text-center">@ 2019 <span>junhui.pro</span></p>
+ 		<p class="m-0 text-center text-white">© 2017 <a href="https://waylau.com">waylau.com</a></p>
     </div>
-
-    <!-- JavaScript -->
+	
+   	<!-- JavaScript -->
     <script src="../../js/jquery-3.1.1.min.js" th:src="@{/js/jquery-3.1.1.min.js}"></script>
     <script src="../../js/jquery.form.min.js" th:src="@{/js/jquery.form.min.js}"></script>
     <script src="../../js/tether.min.js" th:src="@{/js/tether.min.js}"></script>
@@ -25,6 +26,8 @@
     <script src="../../js/cropbox.js" th:src="@{/js/cropbox.js}"></script>
     <script src="../../js/thymeleaf-bootstrap-paginator.js" th:src="@{/js/thymeleaf-bootstrap-paginator.js}"></script>
     <script src="../../js/catalog-generator.js" th:src="@{/js/catalog-generator.js}"></script>
-</footer>
+    <script src="../../js/main.js" th:src="@{/js/main.js}"></script>
+ </footer>
+
 </body>
 </html>

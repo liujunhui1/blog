@@ -1,19 +1,26 @@
 package cn.junhui.blog_test.domain;
 
-import org.springframework.stereotype.Service;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * 军辉
  * 2019-01-29 19:03
+ * 继承 UserDetails 接口，建立于Authority的关系
  */
 @Entity  //实体
-public class User {
+public class User implements UserDetails {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)//自增长策略
@@ -119,5 +126,49 @@ public class User {
                 ", password='" + password + '\'' +
                 ", avatar='" + avatar + '\'' +
                 '}';
+    }
+
+    /*
+    下面是为了角色权限的管理所添加的！
+     */
+
+    @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
+    @JoinTable(name = "user_authority", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "authority_id", referencedColumnName = "id"))
+    private List<Authority> authorities;//用户角色列表
+
+
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        //需要将 List<Authority> 转化成 List<SimpleGrantedAuthority>，否则前台拿不到角色列表名称
+        List<SimpleGrantedAuthority> simpleGrantedAuthorities = new ArrayList<>();
+        for (GrantedAuthority authority : this.authorities) {
+            simpleGrantedAuthorities.add(new SimpleGrantedAuthority(authority.getAuthority()));
+        }
+        return simpleGrantedAuthorities;
+
+    }
+
+    public void setAuthorities(List<Authority> authorities) {
+        this.authorities = authorities;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return false;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return false;
     }
 }

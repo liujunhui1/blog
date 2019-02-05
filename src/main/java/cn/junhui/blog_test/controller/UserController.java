@@ -1,6 +1,8 @@
 package cn.junhui.blog_test.controller;
 
+import cn.junhui.blog_test.domain.Authority;
 import cn.junhui.blog_test.domain.User;
+import cn.junhui.blog_test.service.AuthorityService;
 import cn.junhui.blog_test.service.UserService;
 import cn.junhui.blog_test.util.ConstraintViolationExceptionHandler;
 import cn.junhui.blog_test.vo.Response;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.ConstraintViolationException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +31,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private AuthorityService authorityService;
+
     /*
     查询所有用户
      */
@@ -40,6 +46,11 @@ public class UserController {
         Pageable pageable = PageRequest.of(pageIndex, pageSize);
         Page<User> page = userService.listUsersByNameLike(name, pageable);
         List<User> list = page.getContent();//当前所在页面数据列表
+        System.out.println("******************");
+        System.out.println(list.toString());
+        for (int i = 0; i < list.size(); i++) {
+            System.out.println(list.get(i));
+        }
         model.addAttribute("page", page);
         model.addAttribute("userList", list);
         return new ModelAndView(async == true ? "users/list :: # mainContainerRepleace" : "users/list", "userModel", model);
@@ -51,14 +62,28 @@ public class UserController {
     @GetMapping("/add")
     public ModelAndView createForm(Model model) {
         model.addAttribute("user", new User(null, null, null));
-        return new ModelAndView("/users/add", "userModel", model);
+        return new ModelAndView("users/add", "userModel", model);
     }
 
     /*
     获取创建表单页面
      */
-    @PostMapping
+    /*@PostMapping
     public ResponseEntity<Response> saveOrUpdateUser(User user) {
+
+        try {
+            userService.saveOrUpdateUser(user);
+        } catch (ConstraintViolationException e) {
+            return ResponseEntity.ok().body(new Response(false, ConstraintViolationExceptionHandler.getMessage(e)));
+        }
+        return ResponseEntity.ok().body(new Response(true, "处理成功", user));
+    }*/
+    @PostMapping
+    public ResponseEntity<Response> saveOrUpdateUser(User user, Long authorityId) {
+
+        List<Authority> authorities = new ArrayList<>();
+        authorities.add(authorityService.getAuthorityById(authorityId).get());
+        user.setAuthorities(authorities);
 
         try {
             userService.saveOrUpdateUser(user);
@@ -88,7 +113,7 @@ public class UserController {
     public ModelAndView modifyForm(@PathVariable("id") Long id, Model model) {
         Optional<User> user = userService.getUserById(id);
         model.addAttribute("user", user.get());
-        return new ModelAndView("user/edit", "userModel", model);
+        return new ModelAndView("users/edit", "userModel", model);
     }
 
     /*@Autowired

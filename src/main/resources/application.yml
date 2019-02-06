@@ -12,10 +12,10 @@ spring:
     #热部署静态文件
     encoding: UTF-8
     mode: HTML5
-#  h2:
-#    console:
-#      #开始H2内存数据库
-#      enabled: true
+  h2:
+    console:
+      #开始H2内存数据库
+      enabled: true
   # DataSource
   datasource:
     url: jdbc:mysql://localhost/blog?serverTimezone=UTC&characterEncoding=utf-8

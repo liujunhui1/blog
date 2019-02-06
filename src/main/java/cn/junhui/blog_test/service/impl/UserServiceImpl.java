@@ -6,6 +6,9 @@ import cn.junhui.blog_test.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -19,7 +22,7 @@ import java.util.Optional;
  * 表明此方法支持事务管理
  */
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
 
 
     @Autowired
@@ -53,5 +56,10 @@ public class UserServiceImpl implements UserService {
         name = "%" + name + "%";
         Page<User> users = userRepository.findByNameLike(name, pageable);
         return users;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findByUsername(username);
     }
 }

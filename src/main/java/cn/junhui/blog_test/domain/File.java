@@ -28,11 +28,10 @@ public class File {
     protected File() {
     }
 
-    public File(String name, String contentType, long size, Date uploadDate, Binary content) {
+    public File(String name, String contentType, long size, Binary content) {
         this.name = name;
         this.contentType = contentType;
         this.size = size;
-        this.uploadDate = uploadDate;
         this.content = content;
     }
 

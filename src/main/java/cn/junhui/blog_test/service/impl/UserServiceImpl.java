@@ -20,6 +20,13 @@ import java.util.Optional;
  *
  * @Transactional 注解只能应用到 public 方法才有效。
  * 表明此方法支持事务管理
+ * <p>
+ * public final class Optional<T> extends Object
+ * 可能包含或不包含非空值的容器对象。 如果一个值存在， isPresent()将返回true和get()将返回值。
+ * 提供依赖于存在或不存在包含值的其他方法，
+ * 例如orElse() （如果值不存在则返回默认值）和ifPresent() （如果值存在则执行代码块）。
+ * 这是一个value-based课; 使用身份敏感的操作（包括引用相等（的==上的实例），标识哈希码，或同步）
+ * Optional可具有不可预测的结果，应当避免。
  */
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {

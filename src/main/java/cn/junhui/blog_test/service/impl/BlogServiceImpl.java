@@ -3,17 +3,16 @@ package cn.junhui.blog_test.service.impl;
 import cn.junhui.blog_test.domain.Blog;
 import cn.junhui.blog_test.domain.Comment;
 import cn.junhui.blog_test.domain.User;
+import cn.junhui.blog_test.domain.Vote;
 import cn.junhui.blog_test.repository.BlogRepository;
 import cn.junhui.blog_test.service.BlogService;
-import org.omg.CORBA.IRObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import javax.management.OperationsException;
-import javax.persistence.Id;
+import javax.swing.text.BadLocationException;
 import javax.transaction.Transactional;
 import java.util.Optional;
 
@@ -93,6 +92,35 @@ public class BlogServiceImpl implements BlogService {
         if (optionalBlog.isPresent()) {
             Blog originalBlog = optionalBlog.get();
             originalBlog.removeComment(commentId);
+            this.saveBlog(originalBlog);
+        }
+    }
+
+    @Override
+    public Blog createVote(Long blogId) {
+        Optional<Blog> optionalBlog = blogRepository.findById(blogId);
+        Blog originalBlog = null;
+
+        if (optionalBlog.isPresent()) {
+            originalBlog = optionalBlog.get();
+            User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            Vote vote = new Vote(user);
+            boolean isExist = originalBlog.addVote(vote);
+            if (isExist) {
+                throw new IllegalArgumentException("该用户已经点过赞了");
+            }
+        }
+        return this.saveBlog(originalBlog);
+    }
+
+    @Override
+    public void removeVote(Long blogId, long voteId) {
+        Optional<Blog> optionalBlog = blogRepository.findById(blogId);
+        Blog originalBlog = null;
+
+        if (optionalBlog.isPresent()) {
+            originalBlog = optionalBlog.get();
+            originalBlog.removeVote(voteId);
             this.saveBlog(originalBlog);
         }
     }

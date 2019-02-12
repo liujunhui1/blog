@@ -2,6 +2,7 @@ package cn.junhui.blog_test.controller;
 
 import cn.junhui.blog_test.domain.Blog;
 import cn.junhui.blog_test.domain.User;
+import cn.junhui.blog_test.domain.Vote;
 import cn.junhui.blog_test.service.BlogService;
 import cn.junhui.blog_test.service.UserService;
 import cn.junhui.blog_test.util.ConstraintViolationExceptionHandler;
@@ -23,7 +24,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.jws.WebParam;
 import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
@@ -118,6 +118,20 @@ public class UserspaceController {
             }
         }
 
+        //判断操作用户点赞情况
+        List<Vote> votes = blog.get().getVotes();
+        Vote currentVotes = null;//当前用户点赞用户
+
+        if (principal != null) {
+            for (Vote v : votes) {
+                if (v.getUser().getUsername().equals(principal.getUsername())) {
+                    currentVotes = v;
+                    break;
+                }
+            }
+        }
+
+        model.addAttribute("currentVotes", currentVotes);
         model.addAttribute("isBlogOwner", isBlogOwner);
         model.addAttribute("blogModel", blog.get());
 

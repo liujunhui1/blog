@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.awt.event.FocusEvent;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
@@ -72,10 +73,21 @@ public class Blog implements Serializable {
     @Column(nullable = false)
     private String tags;
 
+    /*
+    使 Blog 与 Comment建立起关系
+     */
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "blog_comment", joinColumns = @JoinColumn(name = "blog_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "comment_id", referencedColumnName = "id"))
     private List<Comment> comments;
+
+    /*
+    Blog 与 Vote 建立起关系
+     */
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(name = "blog_vote", joinColumns = @JoinColumn(name = "blog_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "vote_id", referencedColumnName = "id"))
+    private List<Vote> votes;
 
 
     protected Blog() {
@@ -190,9 +202,17 @@ public class Blog implements Serializable {
         this.commentSize = this.comments.size();
     }
 
+    public List<Vote> getVotes() {
+        return votes;
+    }
+
+    public void setVotes(List<Vote> votes) {
+        this.votes = votes;
+    }
+
     /*
-    添加评论
-     */
+        添加评论
+         */
     public void addComment(Comment comment) {
         this.comments.add(comment);
         this.commentSize = this.comments.size();
@@ -209,6 +229,37 @@ public class Blog implements Serializable {
             }
         }
         this.commentSize = comments.size();
+    }
+
+    /*
+    点赞
+     */
+    public boolean addVote(Vote vote) {
+        boolean isExist = false;
+        for (int index = 0; index < this.votes.size(); index++) {
+            if (this.votes.get(index).getUser().getId() == vote.getUser().getId()) {
+                isExist = true;
+                break;
+            }
+        }
+        if (!isExist) {
+            this.votes.add(vote);
+            this.voteSize = this.votes.size();
+        }
+        return isExist;
+    }
+
+    /*
+    取消点赞
+     */
+    public void removeVote(Long voteId) {
+        for (int i = 0; i < votes.size(); i++) {
+            if (this.votes.get(i).getId() == voteId) {
+                this.votes.remove(i);
+                break;
+            }
+        }
+        this.voteSize = this.votes.size();
     }
 
     @Override

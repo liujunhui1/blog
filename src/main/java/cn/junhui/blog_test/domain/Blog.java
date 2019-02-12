@@ -89,6 +89,13 @@ public class Blog implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "vote_id", referencedColumnName = "id"))
     private List<Vote> votes;
 
+    /*
+    Blog 与 Catalog 建立起关系
+     */
+    @OneToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+    @JoinColumn(name = "catalog_id")
+    private Catalog catalog;
+
 
     protected Blog() {
     }
@@ -210,9 +217,18 @@ public class Blog implements Serializable {
         this.votes = votes;
     }
 
+
+    public Catalog getCatalog() {
+        return catalog;
+    }
+
+    public void setCatalog(Catalog catalog) {
+        this.catalog = catalog;
+    }
+
     /*
-        添加评论
-         */
+            添加评论
+             */
     public void addComment(Comment comment) {
         this.comments.add(comment);
         this.commentSize = this.comments.size();
@@ -261,6 +277,7 @@ public class Blog implements Serializable {
         }
         this.voteSize = this.votes.size();
     }
+
 
     @Override
     public String toString() {

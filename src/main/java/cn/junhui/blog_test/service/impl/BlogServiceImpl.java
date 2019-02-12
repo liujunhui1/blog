@@ -1,9 +1,6 @@
 package cn.junhui.blog_test.service.impl;
 
-import cn.junhui.blog_test.domain.Blog;
-import cn.junhui.blog_test.domain.Comment;
-import cn.junhui.blog_test.domain.User;
-import cn.junhui.blog_test.domain.Vote;
+import cn.junhui.blog_test.domain.*;
 import cn.junhui.blog_test.repository.BlogRepository;
 import cn.junhui.blog_test.service.BlogService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -123,5 +120,11 @@ public class BlogServiceImpl implements BlogService {
             originalBlog.removeVote(voteId);
             this.saveBlog(originalBlog);
         }
+    }
+
+    @Override
+    public Page<Blog> listBlogsByCatalog(Catalog catalog, Pageable pageable) {
+        Page<Blog> blogs = blogRepository.findByCatalog(catalog, pageable);
+        return blogs;
     }
 }

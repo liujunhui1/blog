@@ -5,17 +5,14 @@ import cn.junhui.blog_test.domain.Vote;
 import cn.junhui.blog_test.service.BlogService;
 import cn.junhui.blog_test.service.VoteService;
 import cn.junhui.blog_test.util.ConstraintViolationExceptionHandler;
-import org.springframework.beans.factory.ObjectProvider;
+import cn.junhui.blog_test.vo.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import cn.junhui.blog_test.vo.Response;
-
 import javax.validation.ConstraintViolationException;
-import java.security.acl.Owner;
 import java.util.Optional;
 
 /**

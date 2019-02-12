@@ -1,6 +1,7 @@
 package cn.junhui.blog_test.service;
 
 import cn.junhui.blog_test.domain.Blog;
+import cn.junhui.blog_test.domain.Catalog;
 import cn.junhui.blog_test.domain.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -53,4 +54,9 @@ public interface BlogService {
     取消点赞
      */
     void removeVote(Long blogId, long voteId);
+
+    /*
+    根据分类进行查询
+     */
+    Page<Blog> listBlogsByCatalog(Catalog catalog, Pageable pageable);
 }

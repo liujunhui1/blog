@@ -11,6 +11,7 @@ import java.sql.Timestamp;
  * 2019-02-11 16:43
  * 点赞
  */
+@Entity
 public class Vote implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -20,7 +21,7 @@ public class Vote implements Serializable {
     private Long id;
 
     @OneToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
-    @JoinTable(name = "user_id")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @Column(nullable = false)

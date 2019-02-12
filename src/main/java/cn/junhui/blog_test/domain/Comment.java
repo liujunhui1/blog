@@ -11,6 +11,7 @@ import java.sql.Timestamp;
 /**
  * 军辉
  * 2019-02-10 19:52
+ * 评论
  */
 @Entity
 public class Comment implements Serializable {

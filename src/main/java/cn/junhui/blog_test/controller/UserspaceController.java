@@ -203,6 +203,7 @@ public class UserspaceController {
                     orignalBlog.setContent(blog.getContent());
                     orignalBlog.setSummary(blog.getSummary());
                     orignalBlog.setCatalog(blog.getCatalog());
+                    orignalBlog.setTags(blog.getTags());
                     blogService.saveBlog(blog);
                 }
             } else {

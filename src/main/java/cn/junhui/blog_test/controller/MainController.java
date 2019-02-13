@@ -9,6 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import sun.plugin.javascript.navig.LinkArray;
 
@@ -49,6 +51,12 @@ public class MainController {
     public String login() {
         return "login";
     }
+
+/*    @PostMapping("/login")
+    public String toLogin() {
+        System.out.println("这是post的login");
+        return "redirect:/admins";
+    }*/
 
 
     @GetMapping("/login-error")

@@ -70,7 +70,7 @@ public class Blog implements Serializable {
     @Column(nullable = false)
     private Integer voteSize = 0;//点赞量
 
-    @Column(nullable = false)
+    @Column(name = "tags", length = 100)
     private String tags;
 
     /*

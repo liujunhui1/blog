@@ -73,12 +73,19 @@
         </dependency>
         <!--mangodb的测试依赖  本机未配置mongodb 所以需要次依赖
         若电脑安装了 mongodb 则不需要此依赖-->
-        <!--<dependency>
+        <dependency>
             <groupId>de.flapdoodle.embed</groupId>
             <artifactId>de.flapdoodle.embed.memcached</artifactId>
             <version>1.06.4</version>
             <scope>test</scope>
-        </dependency>-->
+        </dependency>
+
+        <!--Markdown parser的依赖-->
+        <dependency>
+            <groupId>es.nitaur.markdown</groupId>
+            <artifactId>txtmark</artifactId>
+            <version>0.16</version>
+        </dependency>
 
 
         <dependency>

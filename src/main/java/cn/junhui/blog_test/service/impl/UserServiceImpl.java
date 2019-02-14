@@ -12,6 +12,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -68,5 +70,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByUsername(username);
+    }
+
+    @Override
+    public List<User> listUsersByUsernames(Collection<String> usernames) {
+        return userRepository.findByUsernameIn(usernames);
     }
 }

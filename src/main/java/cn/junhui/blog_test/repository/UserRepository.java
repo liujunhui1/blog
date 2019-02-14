@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -30,6 +31,15 @@ public interface UserRepository extends JpaRepository<User, Long> {
     根据用户账户查询用户
      */
     User findByUsername(String username);
+
+
+    /**
+     * 根据名称列表查询用户列表
+     *
+     * @param usernames
+     * @return
+     */
+    List<User> findByUsernameIn(Collection<String> usernames);
 
 
     /*

@@ -84,7 +84,9 @@ public class UserspaceController {
         if (null != catalogId && catalogId > 0) {//分类查询
             //TODO
             Catalog catalog = catalogService.getCatalogById(catalogId).get();
-            Pageable pageable = new PageRequest(pageIndex, pageSize);
+            //下面的一行代码做了修改(方法过时了)
+            // Pageable pageable =new PageRequest(pageIndex, pageSize);
+            Pageable pageable = PageRequest.of(pageIndex, pageSize);
             page = blogService.listBlogsByCatalog(catalog, pageable);
             order = "";
         } else if (order.equals("hot")) {//最热查询

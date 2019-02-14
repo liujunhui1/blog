@@ -1,8 +1,10 @@
 package cn.junhui.blog_test.service.impl;
 
 import cn.junhui.blog_test.domain.*;
+import cn.junhui.blog_test.domain.es.EsBlog;
 import cn.junhui.blog_test.repository.BlogRepository;
 import cn.junhui.blog_test.service.BlogService;
+import cn.junhui.blog_test.service.EsBlogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,16 +25,32 @@ public class BlogServiceImpl implements BlogService {
     @Autowired
     private BlogRepository blogRepository;
 
+    @Autowired
+    private EsBlogService esBlogService;
+
     @Override
     @Transactional
     public Blog saveBlog(Blog blog) {
+        boolean isNew = (blog.getId() == null);
+        EsBlog esBlog = null;
+
         Blog returnBlog = blogRepository.save(blog);
+
+        if (isNew) {
+            esBlog = new EsBlog(returnBlog);
+        } else {
+            esBlog = esBlogService.getEsBlogByBlogId(blog.getId());
+            esBlog.update(returnBlog);
+        }
         return returnBlog;
     }
 
     @Override
     public void removeBlog(Long id) {
         blogRepository.deleteById(id);
+
+        EsBlog esBlog = esBlogService.getEsBlogByBlogId(id);
+        esBlogService.removeEsBlog(esBlog.getId());
     }
 
     @Override

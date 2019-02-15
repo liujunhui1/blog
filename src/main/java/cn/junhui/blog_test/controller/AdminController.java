@@ -1,6 +1,7 @@
 package cn.junhui.blog_test.controller;
 
 import cn.junhui.blog_test.vo.Menu;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +18,7 @@ import java.util.List;
  * 由于目前菜单项就一个，所以先卸载代码中，
  * 后期储存到数据库中
  */
-@RestController
+@Controller
 @RequestMapping("/admins")
 public class AdminController {
 

@@ -5,8 +5,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,7 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  * @EnableGlobalMethodSecurity(prePostEnabled = true) 启用方法级别的安全设置
  */
 
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     //设置用于识别“记住我”身份验证而创建的令牌的键
@@ -60,7 +60,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/admins/").hasRole("ADMIN")//需要相应的角色才能访问
                 .and()
                 .formLogin()//基于 Form 表单登录验证
-                .loginPage("/login").failureUrl("/login-error")//指明了登录路径和登陆失败路径
+                //指明了登录路径和登录失败路径,并且接受了post请求的login方法，处理方法为下面的configureGlobal方法
+                .loginPage("/login").failureUrl("/login-error")
                 .and().rememberMe().key(KEY) //启用 remember me
                 .and().exceptionHandling().accessDeniedPage("/403");//处理异常，拒绝访问就重定向到403页面
 
@@ -76,10 +77,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder managerBuilder) throws Exception {
-     /*   managerBuilder.inMemoryAuthentication()//认证信息存于内存中
+        managerBuilder.inMemoryAuthentication()//认证信息存于内存中
                 .passwordEncoder(new SecurityPasswordEncoder())//使用自己编写的明文密码匹配
-                .withUser("junhui").password("admin").roles("ADMIN");*/
-        managerBuilder.userDetailsService(userDetailsService);
-        managerBuilder.authenticationProvider(authenticationProvider());
+                .withUser("junhui").password("admin").roles("ADMIN");
+       /* managerBuilder.userDetailsService(userDetailsService);
+        managerBuilder.authenticationProvider(authenticationProvider());*/
     }
 }

@@ -10,6 +10,7 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,7 +28,6 @@ import java.util.List;
 
 import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
 import static org.elasticsearch.search.aggregations.AggregationBuilders.terms;
-import static org.elasticsearch.search.aggregations.BucketOrder.count;
 
 /**
  * 军辉
@@ -109,7 +109,7 @@ public class EsBlogServiceImpl implements EsBlogService {
         SearchQuery searchQuery = new NativeSearchQueryBuilder().withQuery(matchAllQuery())
                 .withSearchType(SearchType.QUERY_THEN_FETCH).withIndices("blog").withTypes("blog")
                 .addAggregation(terms("tags").field("tags")
-                        .order(count(false)).size(30)).build();
+                        .order(Terms.Order.count(false)).size(30)).build();
 
         //聚合
         Aggregations aggregations = elasticsearchTemplate.query(searchQuery, new ResultsExtractor<Aggregations>() {
@@ -136,7 +136,7 @@ public class EsBlogServiceImpl implements EsBlogService {
         SearchQuery searchQuery = new NativeSearchQueryBuilder().withQuery(matchAllQuery())
                 .withSearchType(SearchType.QUERY_THEN_FETCH).withIndices("blog").withTypes("blog")
                 .addAggregation(terms("user").field("username")
-                        .order(count(false)).size(12)).build();
+                        .order(Terms.Order.count(false)).size(12)).build();
 
         //聚合
         Aggregations aggregations = elasticsearchTemplate.query(searchQuery, new ResultsExtractor<Aggregations>() {

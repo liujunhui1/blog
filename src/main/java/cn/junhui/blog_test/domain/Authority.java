@@ -22,9 +22,6 @@ public class Authority implements GrantedAuthority {
     @Column(nullable = false)
     private String name;
 
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
-    }
 
     public Long getId() {
         return id;

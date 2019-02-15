@@ -44,7 +44,7 @@ public class MainController {
 
     @GetMapping("/index")
     public String index() {
-        return "redirect:/blogs";
+        return "index";
     }
 
     @GetMapping("/login")
@@ -52,17 +52,16 @@ public class MainController {
         return "login";
     }
 
-/*    @PostMapping("/login")
-    public String toLogin() {
-        System.out.println("这是post的login");
-        return "redirect:/admins";
-    }*/
+    @GetMapping("/test")
+    public String test() {
+        return "test";
+    }
 
 
     @GetMapping("/login-error")
     public String LoginError(Model model) {
         model.addAttribute("loginError", true);
-        model.addAttribute("errMsg", "登录失败，用户账号或密码错误");
+        model.addAttribute("errorMsg", "登录失败，用户账号或密码错误");
         return "login";
     }
 

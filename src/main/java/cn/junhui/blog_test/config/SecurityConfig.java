@@ -12,6 +12,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.annotation.Resource;
+
 /**
  * 军辉
  * 2019-02-03 19:41
@@ -26,7 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private static final String KEY = "junhui";
 
     //认证信息是从数据库中来获取的
-    @Autowired
+    @Resource
     private UserDetailsService userDetailsService;
 
     @Autowired

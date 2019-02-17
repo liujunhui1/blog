@@ -11,7 +11,7 @@ spring:
     cache: false
     #热部署静态文件
     encoding: UTF-8
-    mode: HTML5
+    mode: HTML
     prefix: classpath:/templates/
     suffix: .html
 
@@ -31,8 +31,8 @@ spring:
     #项目运行时，会打印sql语句
     show-sql: true
     #create-drop是指每次应用启动时，都会自动删除并创建数据库表，
-#    hibernate:
-#      ddl-auto: update
+    hibernate:
+      ddl-auto: update
   data:
     elasticsearch:
       cluster-nodes: localhost:9300
@@ -41,5 +41,5 @@ spring:
 #      uri: mongodb://localhost:27017/test
 file:
   server:
-    url: http://localhost:8081/upload
+    url: http://localhost/upload
 

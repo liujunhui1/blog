@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
@@ -30,7 +31,7 @@ public class CatalogController {
     @Autowired
     private CatalogService catalogService;
 
-    @Autowired
+    @Resource
     private UserDetailsService userDetailsService;
 
     /*
@@ -52,9 +53,10 @@ public class CatalogController {
                 isOwner = true;
             }
         }
+        System.out.println("这是获取分类列表的方法，isOwen的值为：" + isOwner);
         model.addAttribute("isCatalogsOwner", isOwner);
         model.addAttribute("catalogs", catalogs);
-        return "/userspace/u :: #catalogReeplace";
+        return "/userspace/u :: #catalogReplace";
     }
 
     /*

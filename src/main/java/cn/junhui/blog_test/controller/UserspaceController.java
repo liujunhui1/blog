@@ -26,6 +26,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.annotation.Resource;
 import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
@@ -42,7 +43,7 @@ public class UserspaceController {
     @Autowired
     private UserService userService;
 
-    @Autowired
+    @Resource
     private UserDetailsService userDetailsService;
 
     @Autowired
@@ -61,6 +62,7 @@ public class UserspaceController {
     public String userSpace(@PathVariable("username") String username, Model model) {
         System.out.println("username:" + username);
         User user = (User) userDetailsService.loadUserByUsername(username);
+        System.out.println("用户主页的当前用户是:" + user);
         model.addAttribute("user", user);
         return "redirect:/u/" + username + "/blogs";
     }
@@ -188,7 +190,7 @@ public class UserspaceController {
     保存博客
      */
     @PostMapping("/{username}/blogs/edit")
-    @PreAuthorize("authentication.name.equals(#username)")
+    //@PreAuthorize("authentication.name.equals(#username)")
     public ResponseEntity<Response> saveBlog(@PathVariable("username") String username, @RequestBody Blog blog) {
 
         //对 Catalog 进行空处理
@@ -227,7 +229,7 @@ public class UserspaceController {
     删除博客
      */
     @DeleteMapping("/{username}/blogs/{id}")
-    @PreAuthorize("authentication.name.equals(#username)")
+    //@PreAuthorize("authentication.name.equals(#username)")
     public ResponseEntity<Response> deleteBlog(@PathVariable("username") String username, @PathVariable("id") Long id) {
         try {
             blogService.removeBlog(id);
@@ -242,10 +244,11 @@ public class UserspaceController {
     获取个人设置页面
      */
     @GetMapping("/{username}/profile")
-    @PreAuthorize("authenticationConfiguration.name.equals(#username)")//这个注解的意思是：只有用户自己才可以修改自己的个人资料
+    //@PreAuthorize("authenticationConfiguration.name.equals(#username)")//这个注解的意思是：只有用户自己才可以修改自己的个人资料
     public ModelAndView profile(@PathVariable("username") String username, Model model) {
         User user = (User) userDetailsService.loadUserByUsername(username);
         model.addAttribute("user", user);
+        System.out.println("个人设置的当前用户是:" + user);
         model.addAttribute("fileServerUrl", fileServerUrl);//文件服务器的地址返回给客户端
         return new ModelAndView("/userspace/profile", "userModel", model);
     }
@@ -254,7 +257,7 @@ public class UserspaceController {
     保存个人设置
      */
     @PostMapping("/{username}/profile")
-    @PreAuthorize("authenticationConfiguration.name.equales(#username)")
+    //@PreAuthorize("authenticationConfiguration.name.equales(#username)")
     public String saveProfile(@PathVariable("username") String username, User user) {
         User originalUser = userService.getUserById(user.getId()).get();
         originalUser.setEmail(user.getEmail());
@@ -276,7 +279,7 @@ public class UserspaceController {
     获取编辑个人头像的界面
      */
     @GetMapping("/{username}/avatar")
-    @PreAuthorize("authenticationConfiguration.name.equals(#username)")
+    //@PreAuthorize("authenticationConfiguration.name.equals(#username)")
     public ModelAndView avatar(@PathVariable("username") String username, Model model) {
         User user = (User) userDetailsService.loadUserByUsername(username);
         model.addAttribute("user", user);
@@ -287,7 +290,7 @@ public class UserspaceController {
     保存头像
      */
     @PostMapping("/{username}/avatar")
-    @PreAuthorize("authenticationConfiguration.name.equals(#username)")
+    //@PreAuthorize("authenticationConfiguration.name.equals(#username)")
     public ResponseEntity<Response> saveAvatar(@PathVariable("username") String username, @RequestBody User user) {
         String avatarUrl = user.getAvatar();
 

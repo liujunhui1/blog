@@ -5,14 +5,14 @@ import cn.junhui.blog_test.domain.User;
 import cn.junhui.blog_test.service.AuthorityService;
 import cn.junhui.blog_test.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-import sun.plugin.javascript.navig.LinkArray;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,4 +78,11 @@ public class MainController {
         userService.registerUser(user);
         return "redirect:/login";
     }
+
+    @GetMapping("/whoim")
+    @ResponseBody
+    public Object whoIm() {
+        return SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
+
 }

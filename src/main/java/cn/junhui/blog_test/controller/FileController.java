@@ -2,6 +2,7 @@ package cn.junhui.blog_test.controller;
 
 import cn.junhui.blog_test.domain.File;
 import cn.junhui.blog_test.service.FileService;
+import cn.junhui.blog_test.util.MD5Util;
 import org.bson.types.Binary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,14 +28,14 @@ import java.util.Optional;
  */
 @Controller
 @RequestMapping("/files")
-@CrossOrigin(origins = "", maxAge = 3600)//允许所有域名访问
+@CrossOrigin(origins = "*", maxAge = 3600)//允许所有域名访问
 public class FileController {
 
     @Autowired
     private FileService fileService;
 
     @Value("${server.address}")
-    private String serviceAddress;
+    private String serverAddress;
 
     @Value("${server.port}")
     private String serverPort;
@@ -97,7 +99,7 @@ public class FileController {
     /*
     上传
      */
-    @PostMapping("/")
+    /*@PostMapping("/")
     public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
         File returnFile = null;
         try {
@@ -105,12 +107,60 @@ public class FileController {
             f.setMd5(DigestUtils.md5DigestAsHex(file.getInputStream()));
             //f.setMd5(MD5Util);
             returnFile = fileService.saveFile(f);
-            String path = "//" + serviceAddress + ":" + serverPort + "/files/view/" + returnFile.getId();
+            String path = "//" + serverAddress + ":" + serverPort + "/files/view/" + returnFile.getId();
             return ResponseEntity.status(HttpStatus.OK).body(path);
 
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+
+    }
+*/
+
+    @PostMapping("/")
+    public String handleFileUpload(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
+
+        try {
+            File f = new File(file.getOriginalFilename(), file.getContentType(), file.getSize(),
+                    new Binary(file.getBytes()));
+            f.setMd5(MD5Util.getMD5(file.getInputStream()));
+            fileService.saveFile(f);
+        } catch (IOException | NoSuchAlgorithmException ex) {
+            ex.printStackTrace();
+            redirectAttributes.addFlashAttribute("message", "Your " + file.getOriginalFilename() + " is wrong!");
+            return "redirect:/";
+        }
+
+        redirectAttributes.addFlashAttribute("message",
+                "You successfully uploaded " + file.getOriginalFilename() + "!");
+
+        return "redirect:/";
+    }
+
+    /**
+     * 上传接口
+     *
+     * @param file
+     * @return
+     */
+    @PostMapping("/upload")
+    @ResponseBody
+    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {
+        System.out.println("这是上传文件的方法");
+        System.out.println("文件的名字是:" + file.getOriginalFilename());
+        File returnFile = null;
+        try {
+            File f = new File(file.getOriginalFilename(), file.getContentType(), file.getSize(),
+                    new Binary(file.getBytes()));
+            f.setMd5(MD5Util.getMD5(file.getInputStream()));
+            returnFile = fileService.saveFile(f);
+            String path = "//" + serverAddress + ":" + serverPort + "/view/" + returnFile.getId();
+            return ResponseEntity.status(HttpStatus.OK).body(path);
+
+        } catch (IOException | NoSuchAlgorithmException ex) {
+            ex.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
         }
 
     }

@@ -1,6 +1,7 @@
 package cn.junhui.blog_test.domain;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -10,6 +11,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -102,7 +104,10 @@ public class User implements UserDetails {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        PasswordEncoder encoder = new BCryptPasswordEncoder();
+        String encodePasswd = encoder.encode(password);
+        System.out.println("setPassword:" + "原密码:" + password + "加密的密码：" + encodePasswd);
+        this.password = encodePasswd;
     }
 
     public String getAvatar() {
@@ -140,6 +145,8 @@ public class User implements UserDetails {
     private List<Authority> authorities;//用户角色列表
 
 
+    //权限
+    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         //需要将 List<Authority> 转化成 List<SimpleGrantedAuthority>，否则前台拿不到角色列表名称
         List<SimpleGrantedAuthority> simpleGrantedAuthorities = new ArrayList<>();
@@ -147,6 +154,7 @@ public class User implements UserDetails {
             simpleGrantedAuthorities.add(new SimpleGrantedAuthority(authority.getAuthority()));
         }
         return simpleGrantedAuthorities;
+        //return AuthorityUtils.commaSeparatedStringToAuthorityList(authorities)
 
     }
 
@@ -174,12 +182,14 @@ public class User implements UserDetails {
         return false;
     }
 
+
     /**
      * 加密密码
      */
     public void setEncodePassword(String password) {
         PasswordEncoder encoder = new BCryptPasswordEncoder();
         String encodePasswd = encoder.encode(password);
+        System.out.println("setEncodePassword:" + "原密码:" + password + "加密的密码：" + encodePasswd);
         this.password = encodePasswd;
     }
 }

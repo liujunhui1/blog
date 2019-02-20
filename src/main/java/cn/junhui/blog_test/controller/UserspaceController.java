@@ -62,7 +62,7 @@ public class UserspaceController {
     public String userSpace(@PathVariable("username") String username, Model model) {
         System.out.println("username:" + username);
         User user = (User) userDetailsService.loadUserByUsername(username);
-        System.out.println("用户主页的当前用户是:" + user);
+        // System.out.println("用户主页的当前用户是:" + user);
         model.addAttribute("user", user);
         return "redirect:/u/" + username + "/blogs";
     }
@@ -99,7 +99,6 @@ public class UserspaceController {
             page = blogService.listBlogsByTitleVote(user, keyword, pageable);
         }
         List<Blog> list = page.getContent(); //当前所在页面数据列表
-
         model.addAttribute("user", user);
         model.addAttribute("order", order);
         model.addAttribute("catalogId", catalogId);
@@ -145,6 +144,8 @@ public class UserspaceController {
             }
         }
 
+        System.out.println("当前页面用户信息:" + principal);
+        model.addAttribute("user", principal);
         model.addAttribute("currentVotes", currentVotes);
         model.addAttribute("isBlogOwner", isBlogOwner);
         model.addAttribute("blogModel", blog.get());
@@ -183,14 +184,14 @@ public class UserspaceController {
         model.addAttribute("blog", blogService.getBlogById(id).get());
         model.addAttribute("fileServerUrl", fileServerUrl);//文件服务器的地址返回给客户端
 
-        return new ModelAndView("/userspace/edit", "blogModel", model);
+        return new ModelAndView("/userspace/blogedit", "blogModel", model);
     }
 
     /*
     保存博客
      */
     @PostMapping("/{username}/blogs/edit")
-    //@PreAuthorize("authentication.name.equals(#username)")
+    @PreAuthorize("authentication.name.equals(#username)")
     public ResponseEntity<Response> saveBlog(@PathVariable("username") String username, @RequestBody Blog blog) {
 
         //对 Catalog 进行空处理

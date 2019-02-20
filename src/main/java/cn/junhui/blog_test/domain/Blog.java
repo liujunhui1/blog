@@ -75,6 +75,7 @@ public class Blog implements Serializable {
 
     /*
     使 Blog 与 Comment建立起关系
+    评论
      */
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "blog_comment", joinColumns = @JoinColumn(name = "blog_id", referencedColumnName = "id"),
@@ -83,6 +84,7 @@ public class Blog implements Serializable {
 
     /*
     Blog 与 Vote 建立起关系
+    点赞
      */
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "blog_vote", joinColumns = @JoinColumn(name = "blog_id", referencedColumnName = "id"),
@@ -91,6 +93,7 @@ public class Blog implements Serializable {
 
     /*
     Blog 与 Catalog 建立起关系
+    分类
      */
     @OneToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     @JoinColumn(name = "catalog_id")

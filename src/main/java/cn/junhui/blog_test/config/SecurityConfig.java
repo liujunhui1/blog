@@ -4,20 +4,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
 import javax.annotation.Resource;
+import javax.sql.DataSource;
 
 /**
  * 军辉
@@ -27,7 +26,7 @@ import javax.annotation.Resource;
  */
 @Configuration
 @EnableWebSecurity
-//@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     //设置用于识别“记住我”身份验证而创建的令牌的键
@@ -36,6 +35,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     //认证信息是从数据库中来获取的
     @Resource
     private UserDetailsService userDetailsService;
+
+    @Autowired
+    private DataSource dataSource;
 
     /* @Autowired
      private PasswordEncoder passwordEncoder;
@@ -48,6 +50,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private AuthenticationFailureHandler failureHandler;
+
+    /*
+    记住我 功能
+     */
+    @Bean
+    public PersistentTokenRepository persistentTokenRepository() {
+        JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
+        tokenRepository.setDataSource(dataSource);
+        //自动创建数据库表，使用一次后注释掉，不然会报错
+//        jdbcTokenRepository.setCreateTableOnStartup(true);
+
+        return tokenRepository;
+    }
 
  /*   @Bean
     public PasswordEncoder passwordEncoder() {
@@ -82,7 +97,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .successHandler(successHandler)
                 .failureHandler(failureHandler)
                 .permitAll()
-                //.and().rememberMe().key(KEY) //启用 remember me
+                .and()
+                .rememberMe() //启用 remember-me
+                .rememberMeParameter("remember-me").userDetailsService(userDetailsService)
+                .tokenRepository(persistentTokenRepository())// 设置TokenRepository
+                .tokenValiditySeconds(60)// 配置Cookie过期时间
                 .and().exceptionHandling().accessDeniedPage("/403");//处理异常，拒绝访问就重定向到403页面
 
         //禁用H2控制台的CSRF防护

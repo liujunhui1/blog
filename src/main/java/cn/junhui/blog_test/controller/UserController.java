@@ -46,8 +46,6 @@ public class UserController {
         Pageable pageable = PageRequest.of(pageIndex, pageSize);
         Page<User> page = userService.listUsersByNameLike(name, pageable);
         List<User> list = page.getContent();//当前所在页面数据列表
-        System.out.println("******************");
-        System.out.println(list.toString());
         for (int i = 0; i < list.size(); i++) {
             System.out.println(list.get(i));
         }

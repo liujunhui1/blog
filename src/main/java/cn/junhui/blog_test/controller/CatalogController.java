@@ -6,6 +6,8 @@ import cn.junhui.blog_test.service.CatalogService;
 import cn.junhui.blog_test.util.ConstraintViolationExceptionHandler;
 import cn.junhui.blog_test.vo.CatalogVO;
 import cn.junhui.blog_test.vo.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,8 +36,10 @@ public class CatalogController {
     @Resource
     private UserDetailsService userDetailsService;
 
+
     /*
     获取分类列表
+    anonymousUser 的意思是 匿名
      */
     @GetMapping
     public String listComments(@RequestParam(value = "username", required = true) String username, Model model) {
@@ -47,16 +51,15 @@ public class CatalogController {
 
         if (SecurityContextHolder.getContext().getAuthentication() != null
                 && SecurityContextHolder.getContext().getAuthentication().isAuthenticated()
-                && SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString().equals("anonymousUser")) {
+                && !SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString().equals("anonymousUser")) {
             User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             if (principal != null && user.getUsername().equals(principal.getUsername())) {
                 isOwner = true;
             }
         }
-        System.out.println("这是获取分类列表的方法，isOwen的值为：" + isOwner);
         model.addAttribute("isCatalogsOwner", isOwner);
         model.addAttribute("catalogs", catalogs);
-        return "/userspace/u :: #catalogReplace";
+        return "userspace/u :: #catalogReplace";
     }
 
     /*
@@ -70,7 +73,7 @@ public class CatalogController {
         Catalog catalog = catalogVO.getCatalog();
 
         User user = (User) userDetailsService.loadUserByUsername(username);
-
+        System.out.println("CatalogController 创建分类:user" + user + "catalog" + catalog);
         try {
             catalog.setUser(user);
             catalogService.saveCatalog(catalog);
@@ -114,7 +117,7 @@ public class CatalogController {
     /*
     根据id获取编辑界面
      */
-    @GetMapping("edit/{id}")
+    @GetMapping("/edit/{id}")
     public String getCatalogById(@PathVariable("id") Long id, Model model) {
         Optional<Catalog> optionalCatalog = catalogService.getCatalogById(id);
         Catalog catalog = null;

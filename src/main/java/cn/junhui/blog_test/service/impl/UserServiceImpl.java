@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         // //这里可以可以通过username（登录时输入的用户名）然后到数据库中找到对应的用户信息，
         // 并构建成我们自己的UserInfo来返回。
         //return userRepository.findByUsername();
-        System.out.println("userServiceImpl重载的 listUsersByUsernames 的 usernames:" + usernames);
+        // System.out.println("userServiceImpl重载的 listUsersByUsernames 的 usernames:" + usernames);
         return userRepository.findByUsernameIn(usernames);
     }
 
@@ -82,8 +82,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        System.out.println("userServiceImpl重载的 loadUserByUsername 的 username:" + username);
-        System.out.println("**************" + userRepository.findByUsername(username) + "*********************");
+        // System.out.println("userServiceImpl重载的 loadUserByUsername 的 username:" + username);
+        // System.out.println("**************" + userRepository.findByUsername(username) + "*********************");
         return userRepository.findByUsername(username);
     }
 

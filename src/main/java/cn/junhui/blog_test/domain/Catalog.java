@@ -1,9 +1,11 @@
 package cn.junhui.blog_test.domain;
 
 import cn.junhui.blog_test.domain.User;
+import io.netty.handler.codec.compression.FastLzFrameEncoder;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 /**
@@ -19,10 +21,16 @@ public class Catalog implements Serializable {
 
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotEmpty(message = "分类名称不能为空")
+    @Size(min = 2, max = 20)
+    @Column(nullable = false)
     private String name;
 
+    @OneToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private User user;
 
     protected Catalog() {

@@ -25,7 +25,7 @@
 
 
 <div id="cropImg" class="cropImg">
-    <span>图片剪切</span> <img src=""/>
+    <span>选择图片</span> <img src=""/>
 </div>
 <div class="crop" id="crop">
     <input type="file" accept="image/*" class="crop-input">
@@ -46,7 +46,11 @@
 
     </div>
 </div>
-<form enctype="multipart/form-data" id="avatarformid"></form>
+<!--id="avatarformid"-->
+<form enctype="multipart/form-data" method="post" action="/upload">
+    <input type="file" name="file">
+    <input type="submit" value="提交">
+</form>
 
 <script>
     var crop = document.querySelector('#cropImg');

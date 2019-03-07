@@ -25,13 +25,20 @@ public class File {
     private Binary content;//文件内容（是使用 Binary类型进来存储的）
     private String path;//文件路径
 
-    protected File() {
+    public File() {
     }
 
     public File(String name, String contentType, long size, Binary content) {
         this.name = name;
         this.contentType = contentType;
         this.size = size;
+        this.content = content;
+    }
+
+    public File(String name, String contentType, Date uploadDate, Binary content) {
+        this.name = name;
+        this.contentType = contentType;
+        this.uploadDate = uploadDate;
         this.content = content;
     }
 

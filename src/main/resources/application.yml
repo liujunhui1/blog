@@ -37,12 +37,12 @@ spring:
     elasticsearch:
       cluster-nodes: localhost:9300
 #使用本地的mongodb的时候才配置mongodb的uri
-#    mongodb:
-#      uri: mongodb://localhost:27017/test
+    mongodb:
+      uri: mongodb://localhost:27017/test
+      database: test
 file:
   server:
-    url: http://localhost/files/upload
-
+    url: http://localhost/upload
 
 
 

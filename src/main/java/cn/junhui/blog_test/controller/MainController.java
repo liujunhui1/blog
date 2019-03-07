@@ -8,10 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
@@ -42,19 +41,19 @@ public class MainController {
         return "redirect:/index";
     }
 
-    @GetMapping("/index")
+  /*  @GetMapping("/index")
     public String index() {
-        return "index";
+        return "redirect:/blogs";
+    }*/
+
+    @GetMapping("/index")
+    public ModelAndView index() {
+        return new ModelAndView("redirect:/blogs");
     }
 
     @GetMapping("/login")
     public String login() {
         return "login";
-    }
-
-    @GetMapping("/test")
-    public String test() {
-        return "test";
     }
 
 
@@ -83,6 +82,11 @@ public class MainController {
     @ResponseBody
     public Object whoIm() {
         return SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
+
+    @PostMapping("/test")
+    public void test() {
+        System.out.println("test");
     }
 
 }

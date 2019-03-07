@@ -6,6 +6,7 @@ import cn.junhui.blog_test.util.MD5Util;
 import org.bson.types.Binary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,12 +28,16 @@ import java.util.Optional;
  * 2019-02-06 19:51
  */
 @Controller
-@RequestMapping("/files")
+//@RequestMapping("/files")
 @CrossOrigin(origins = "*", maxAge = 3600)//允许所有域名访问
 public class FileController {
 
     @Autowired
     private FileService fileService;
+
+    @Autowired
+    private GridFsTemplate gridFsTemplate;
+
 
     @Value("${server.address}")
     private String serverAddress;
@@ -40,18 +45,19 @@ public class FileController {
     @Value("${server.port}")
     private String serverPort;
 
-    @GetMapping
+    @GetMapping("/files")
     public String index(Model model) {
         //展示最新的10条数据
         model.addAttribute("files", fileService.listFilesByPage(0, 10));
-        return "index";
+        // return "index";
+        return "test";
     }
 
     /*
     分页查询文件
      */
     @ResponseBody
-    @GetMapping("/{pageIndex}/{pageSize}")
+    @GetMapping("/files/{pageIndex}/{pageSize}")
     public List<File> listFileByPage(@PathVariable int PageIndex,
                                      @PathVariable int pageSize) {
         return fileService.listFilesByPage(PageIndex, pageSize);
@@ -60,7 +66,7 @@ public class FileController {
     /*
     获取文件信息
      */
-    @GetMapping("/{id}")
+    @GetMapping("/files/{id}")
     @ResponseBody
     public ResponseEntity<Object> serveFile(@PathVariable String id) {
         Optional<File> fileOption = fileService.getFileById(id);
@@ -99,28 +105,9 @@ public class FileController {
     /*
     上传
      */
-    /*@PostMapping("/")
-    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
-        File returnFile = null;
-        try {
-            File f = new File(file.getOriginalFilename(), file.getContentType(), file.getSize(), new Binary(file.getBytes()));
-            f.setMd5(DigestUtils.md5DigestAsHex(file.getInputStream()));
-            //f.setMd5(MD5Util);
-            returnFile = fileService.saveFile(f);
-            String path = "//" + serverAddress + ":" + serverPort + "/files/view/" + returnFile.getId();
-            return ResponseEntity.status(HttpStatus.OK).body(path);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
-
-    }
-*/
-
     @PostMapping("/")
     public String handleFileUpload(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
-
+        System.out.println("上传/文件" + file);
         try {
             File f = new File(file.getOriginalFilename(), file.getContentType(), file.getSize(),
                     new Binary(file.getBytes()));
@@ -129,13 +116,15 @@ public class FileController {
         } catch (IOException | NoSuchAlgorithmException ex) {
             ex.printStackTrace();
             redirectAttributes.addFlashAttribute("message", "Your " + file.getOriginalFilename() + " is wrong!");
-            return "redirect:/";
+            // return "redirect:/";
+            return "redirect:/test";
         }
 
         redirectAttributes.addFlashAttribute("message",
                 "You successfully uploaded " + file.getOriginalFilename() + "!");
 
-        return "redirect:/";
+        //return "redirect:/";
+        return "redirect:/test";
     }
 
     /**
@@ -144,10 +133,30 @@ public class FileController {
      * @param file
      * @return
      */
-    @PostMapping("/upload")
-    @ResponseBody
-    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {
-        System.out.println("这是上传文件的方法");
+    //@ResponseBody
+      @PostMapping("/upload")
+        public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {
+            System.out.println("这是上传文件的方法");
+            System.out.println("文件的名字是:" + file.getOriginalFilename());
+        File returnFile = null;
+        try {
+            File f = new File(file.getOriginalFilename(), file.getContentType(), file.getSize(),
+                    new Binary(file.getBytes()));
+            f.setMd5(MD5Util.getMD5(file.getInputStream()));
+            returnFile = fileService.saveFile(f);
+            String path = "//" + serverAddress + ":" + serverPort + "/view/" + returnFile.getId();
+            return ResponseEntity.status(HttpStatus.OK).body(path);
+
+        } catch (IOException | NoSuchAlgorithmException ex) {
+            ex.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+        }
+
+    }
+
+    @GetMapping("/upload")
+    public ResponseEntity<String> GethandleFileUpload(@RequestParam("file") MultipartFile file) {
+        System.out.println("Get这是上传文件的方法");
         System.out.println("文件的名字是:" + file.getOriginalFilename());
         File returnFile = null;
         try {
@@ -164,6 +173,13 @@ public class FileController {
         }
 
     }
+
+   /* @ResponseBody
+    @GetMapping("/upload")
+    public ResponseEntity toTest() {
+        return ResponseEntity.status(HttpStatus.OK).body("Get_upload");
+    }
+*/
 
     /*
     删除文件

@@ -47,7 +47,6 @@ public class User implements UserDetails {
     private String username;//用户账号，用户登录时的唯一标识
 
     @NotEmpty(message = "密码不能为空")
-    @Size(max = 100)
     @Column(length = 100)
     private String password;
 
@@ -104,10 +103,14 @@ public class User implements UserDetails {
     }
 
     public void setPassword(String password) {
-        PasswordEncoder encoder = new BCryptPasswordEncoder();
-        String encodePasswd = encoder.encode(password);
-        System.out.println("setPassword:" + "原密码:" + password + "加密的密码：" + encodePasswd);
-        this.password = encodePasswd;
+        if (password.length() > 16) {
+            this.password = password;
+        } else {
+            PasswordEncoder encoder = new BCryptPasswordEncoder();
+            String encodePasswd = encoder.encode(password);
+            System.out.println("setPassword:" + "原密码:" + password + "加密的密码：" + encodePasswd);
+            this.password = encodePasswd;
+        }
     }
 
     public String getAvatar() {

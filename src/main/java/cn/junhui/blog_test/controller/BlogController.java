@@ -105,6 +105,6 @@ public class BlogController {
             model.addAttribute("users", users);
 
         }
-        return (async == true ? "index :: #mainContainerReplace" : "index");
+        return (async == true ? "index :: #mainContainerRepleace" : "index");
     }
 }

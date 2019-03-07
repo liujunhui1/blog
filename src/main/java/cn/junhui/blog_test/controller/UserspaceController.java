@@ -183,6 +183,7 @@ public class UserspaceController {
         model.addAttribute("catalogs", catalogs);
         model.addAttribute("blog", blogService.getBlogById(id).get());
         model.addAttribute("fileServerUrl", fileServerUrl);//文件服务器的地址返回给客户端
+       // model.addAttribute("user", user);
 
         return new ModelAndView("/userspace/blogedit", "blogModel", model);
     }
@@ -230,7 +231,7 @@ public class UserspaceController {
     删除博客
      */
     @DeleteMapping("/{username}/blogs/{id}")
-    //@PreAuthorize("authentication.name.equals(#username)")
+    @PreAuthorize("authentication.name.equals(#username)")
     public ResponseEntity<Response> deleteBlog(@PathVariable("username") String username, @PathVariable("id") Long id) {
         try {
             blogService.removeBlog(id);
@@ -245,7 +246,8 @@ public class UserspaceController {
     获取个人设置页面
      */
     @GetMapping("/{username}/profile")
-    //@PreAuthorize("authenticationConfiguration.name.equals(#username)")//这个注解的意思是：只有用户自己才可以修改自己的个人资料
+    //@PreAuthorize("authentication.name.equals(#username)")//这个注解的意思是：只有用户自己才可以修改自己的个人资料
+    @PreAuthorize("principal.username.equals(#username)")
     public ModelAndView profile(@PathVariable("username") String username, Model model) {
         User user = (User) userDetailsService.loadUserByUsername(username);
         model.addAttribute("user", user);
@@ -258,17 +260,19 @@ public class UserspaceController {
     保存个人设置
      */
     @PostMapping("/{username}/profile")
-    //@PreAuthorize("authenticationConfiguration.name.equales(#username)")
+    @PreAuthorize("principal.username.equals(#username)")
     public String saveProfile(@PathVariable("username") String username, User user) {
         User originalUser = userService.getUserById(user.getId()).get();
         originalUser.setEmail(user.getEmail());
         originalUser.setName(user.getName());
 
         //判断密码是否做了更改
-        String rawPassword = originalUser.getPassword();
-        PasswordEncoder encoder = new BCryptPasswordEncoder();
-        String encodePasswd = encoder.encode(user.getPassword());
-        boolean isMatch = encoder.matches(rawPassword, encodePasswd);
+        //String rawPassword = originalUser.getPassword();
+        //PasswordEncoder encoder = new BCryptPasswordEncoder();
+        // String encodePasswd = encoder.encode(user.getPassword());
+        //boolean isMatch = encoder.matches(rawPassword, rawPassword);
+        boolean isMatch = user.getPassword().equals(originalUser.getPassword());
+        System.out.println("密码是否做了修改：" + isMatch);
         if (!isMatch) {
             originalUser.setEncodePassword(user.getPassword());
         }
@@ -280,8 +284,9 @@ public class UserspaceController {
     获取编辑个人头像的界面
      */
     @GetMapping("/{username}/avatar")
-    //@PreAuthorize("authenticationConfiguration.name.equals(#username)")
+    @PreAuthorize("principal.username.equals(#username)")
     public ModelAndView avatar(@PathVariable("username") String username, Model model) {
+        System.out.println("获取编辑个人头像的界面");
         User user = (User) userDetailsService.loadUserByUsername(username);
         model.addAttribute("user", user);
         return new ModelAndView("/userspace/avatar", "userModel", model);
@@ -291,8 +296,9 @@ public class UserspaceController {
     保存头像
      */
     @PostMapping("/{username}/avatar")
-    //@PreAuthorize("authenticationConfiguration.name.equals(#username)")
+    @PreAuthorize("principal.username.equals(#username)")
     public ResponseEntity<Response> saveAvatar(@PathVariable("username") String username, @RequestBody User user) {
+        System.out.println("  保存头像");
         String avatarUrl = user.getAvatar();
 
         User originalUser = userService.getUserById(user.getId()).get();

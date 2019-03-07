@@ -24,7 +24,6 @@ import javax.sql.DataSource;
  *
  * @EnableGlobalMethodSecurity(prePostEnabled = true) 启用方法级别的安全设置
  */
-@Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -86,14 +85,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/css/**", "/js/**", "/fonts/**", "/index").permitAll()//都可以访问
-                .antMatchers("/h2-console/**").permitAll()
-                .antMatchers("/admins/").hasRole("ADMIN")//需要相应的角色才能访问
+                .antMatchers("/static/**", "/css/**", "/js/**", "/fonts/**", "/images/**", "/index","/file/test1").permitAll()//都可以访问
+                //.antMatchers("/h2-console/**").permitAll()
+                .antMatchers("/login", "/register").permitAll()
+                .antMatchers("/admins/**").hasRole("ADMIN")//需要相应的角色才能访问
+                .anyRequest().authenticated()//任何尚未匹配的url只需要验证用户即可访问
                 .and()
                 .formLogin()//基于 Form 表单登录验证
                 //指明了登录路径和登录失败路径,并且接受了post请求的login方法，处理方法为下面的configureGlobal方法
-                //loginProcessingUrl()处理路径
-                .loginPage("/login").failureUrl("/login-error")
+                //loginProcessingUrl()指明登录处理路径
+                .loginPage("/login").failureUrl("/login-error").successForwardUrl("/")
                 .successHandler(successHandler)
                 .failureHandler(failureHandler)
                 .permitAll()
@@ -101,14 +102,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .rememberMe() //启用 remember-me
                 .rememberMeParameter("remember-me").userDetailsService(userDetailsService)
                 .tokenRepository(persistentTokenRepository())// 设置TokenRepository
-                .tokenValiditySeconds(60)// 配置Cookie过期时间
+                //.tokenValiditySeconds(600)// 配置Cookie过期时间
                 .and().exceptionHandling().accessDeniedPage("/403");//处理异常，拒绝访问就重定向到403页面
 
         //禁用H2控制台的CSRF防护
-        http.csrf().ignoringAntMatchers("/h2-console/**");
+        //http.csrf().ignoringAntMatchers("/h2-console/**");
 
         //允许来自同一来源的H2控制台的请求
-        http.headers().frameOptions().sameOrigin();
+        //http.headers().frameOptions().sameOrigin();
 
 
     }

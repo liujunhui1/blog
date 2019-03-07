@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.jnlp.UnavailableServiceException;
 import javax.validation.ConstraintViolationException;
+import java.security.Principal;
 import java.security.acl.Owner;
 import java.util.List;
 import java.util.Optional;
@@ -43,6 +44,7 @@ public class CommentController {
     public String listComments(@RequestParam(value = "blogId", required = true) Long blogId, Model model) {
         Optional<Blog> optionalBlog = blogService.getBlogById(blogId);
         List<Comment> comments = null;
+        User principal = null;
 
         if (optionalBlog.isPresent()) {
             comments = optionalBlog.get().getComments();
@@ -53,13 +55,14 @@ public class CommentController {
         if (SecurityContextHolder.getContext().getAuthentication() != null
                 && SecurityContextHolder.getContext().getAuthentication().isAuthenticated()
                 && !SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString().equals("anonymousUser")) {
-            User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             if (principal != null) {
                 commentOwner = principal.getName();
             }
         }
-        model.addAttribute("commentOwener", commentOwner);
-        model.addAttribute("comments", commentOwner);
+        model.addAttribute("commentOwner", commentOwner);
+        model.addAttribute("comments", comments);
+        model.addAttribute("user", principal);
         return "/userspace/blog :: #mainContainerRepleace";
     }
 
